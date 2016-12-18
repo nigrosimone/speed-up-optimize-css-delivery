@@ -3,7 +3,7 @@
  Plugin Name: Speed Up - Optimize CSS Delivery
  Plugin URI: http://wordpress.org/plugins/speed-up-optimize-css-delivery/
  Description: This plugin load the stylesheets asynchronously and improve page load times.
- Version: 1.0.0
+ Version: 1.0.1
  Author: Simone Nigro
  Author URI: https://profiles.wordpress.org/nigrosimone
  License: GPLv2 or later
@@ -52,7 +52,7 @@ class SpeedUp_OptimizeCSSDelivery {
         
         if( !is_admin() ){
             add_filter('style_loader_tag', array($this, 'style_loader_tag'), 9999, 3);
-            add_action('wp_head', array($this, 'print_inline_script'), 0);
+            add_action('wp_head', array($this, 'print_inline_script'));
         }
     }
     
