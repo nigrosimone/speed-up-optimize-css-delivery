@@ -3,8 +3,8 @@ Contributors: nigro.simone
 Donate link: http://paypal.me/snwp
 Tags: async, asynchronous, wp_enqueue_style, performance, seo, optimize, front-end optimization, performance, speed, web performance optimization, wordpress optimization tool
 Requires at least: 3.5
-Tested up to: 4.7
-Stable tag: 1.0.1
+Tested up to: 4.9
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,11 +19,11 @@ Non-vital CSS-files can be for example: fonts, icons, before the fold template-s
 
 You can choose which files to load synchronously with a filter in your function.php, eg.:
 
-// exclude main and child stylesheets from delivery optimization
+`// exclude main and child stylesheets from delivery optimization
 function exclude_from_delivery_optimization($handle){
 	return in_array($handle, array('main-stylesheet', 'child-stylesheet'));
 }
-add_filter('speed-up-optimize-css-delivery', 'exclude_from_delivery_optimization');
+add_filter('speed-up-optimize-css-delivery', 'exclude_from_delivery_optimization');`
 
 Note: this only works if your other plugins and theme add the CSS correctly.
 
@@ -33,6 +33,10 @@ Note: this only works if your other plugins and theme add the CSS correctly.
 2. Activate the plugin through the 'Plugins' menu in WordPress
 
 == Changelog ==
+
+= 1.0.2 =
+* Tested up to Wordpress 4.9
+* Update loadCSS 
 
 = 1.0.1 =
 * Fix bug css not loaded if cached.

@@ -1,4 +1,4 @@
-/*! loadCSS: load a CSS file asynchronously. [c]2016 @scottjehl, Filament Group, Inc. Licensed MIT */
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
 (function(w){
 	"use strict";
 	/* exported loadCSS */
@@ -78,7 +78,7 @@
 	}
 }( typeof global !== "undefined" ? global : this ));
 
-/*! CSS rel=preload polyfill. Depends on loadCSS function. [c]2016 @scottjehl, Filament Group, Inc. Licensed MIT  */
+/*! loadCSS rel=preload polyfill. [c]2017 Filament Group, Inc. MIT License */
 (function( w ){
   // rel=preload support test
   if( !w.loadCSS ){
@@ -99,7 +99,7 @@
     for( var i = 0; i < links.length; i++ ){
       var link = links[ i ];
       if( link.rel === "preload" && link.getAttribute( "as" ) === "style" ){
-        w.loadCSS( link.href, link );
+        w.loadCSS( link.href, link, link.getAttribute( "media" ) );
         link.rel = null;
       }
     }
@@ -111,13 +111,14 @@
     var run = w.setInterval( rp.poly, 300 );
     if( w.addEventListener ){
       w.addEventListener( "load", function(){
+        rp.poly();
         w.clearInterval( run );
       } );
     }
     if( w.attachEvent ){
       w.attachEvent( "onload", function(){
         w.clearInterval( run );
-      } )
+      } );
     }
   }
 }( this ));
