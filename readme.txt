@@ -4,7 +4,7 @@ Donate link: http://paypal.me/snwp
 Tags: async, asynchronous, wp_enqueue_style, performance, seo, optimize, front-end optimization, performance, speed, web performance optimization, wordpress optimization tool
 Requires at least: 3.5
 Tested up to: 4.9
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,6 +33,9 @@ Note: this only works if your other plugins and theme add the CSS correctly.
 2. Activate the plugin through the 'Plugins' menu in WordPress
 
 == Changelog ==
+
+= 1.0.3 =
+* Update loadCSS 
 
 = 1.0.2 =
 * Tested up to Wordpress 4.9
