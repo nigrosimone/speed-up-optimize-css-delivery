@@ -3,7 +3,7 @@
  Plugin Name: Speed Up - Optimize CSS Delivery
  Plugin URI: http://wordpress.org/plugins/speed-up-optimize-css-delivery/
  Description: This plugin load the stylesheets asynchronously and improve page load times.
- Version: 1.0.3
+ Version: 1.0.4
  Author: Simone Nigro
  Author URI: https://profiles.wordpress.org/nigrosimone
  License: GPLv2 or later
@@ -17,7 +17,14 @@ class SpeedUp_OptimizeCSSDelivery {
     const HANDLE  = 'speed-up-optimize-css-delivery';
     
     // @see /wp-content/plugins/speed-up-optimize-css-delivery/js/loadCSS.js for unminified version
-    const LOADCSS = '/* loadCSS. [c]2018 Filament Group, Inc. MIT License */ !function(e){"use strict";var t=function(t,n,o){var a,l=e.document,r=l.createElement("link");if(n)a=n;else{var d=(l.body||l.getElementsByTagName("head")[0]).childNodes;a=d[d.length-1]}var i=l.styleSheets;r.rel="stylesheet",r.href=t,r.media="only x",function e(t){if(l.body)return t();setTimeout(function(){e(t)})}(function(){a.parentNode.insertBefore(r,n?a:a.nextSibling)});var s=function(e){for(var t=r.href,n=i.length;n--;)if(i[n].href===t)return e();setTimeout(function(){s(e)})};function u(){r.addEventListener&&r.removeEventListener("load",u),r.media=o||"all"}return r.addEventListener&&r.addEventListener("load",u),r.onloadcssdefined=s,s(u),r};"undefined"!=typeof exports?exports.loadCSS=t:e.loadCSS=t}("undefined"!=typeof global?global:this),function(e){"use strict";e.loadCSS||(e.loadCSS=function(){});var t=loadCSS.relpreload={};if(t.support=function(){var t;try{t=e.document.createElement("link").relList.supports("preload")}catch(e){t=!1}return function(){return t}}(),t.bindMediaToggle=function(e){var t=e.media||"all";function n(){e.media=t}e.addEventListener?e.addEventListener("load",n):e.attachEvent&&e.attachEvent("onload",n),setTimeout(function(){e.rel="stylesheet",e.media="only x"}),setTimeout(n,3e3)},t.poly=function(){if(!t.support())for(var n=e.document.getElementsByTagName("link"),o=0;o<n.length;o++){var a=n[o];"preload"!==a.rel||"style"!==a.getAttribute("as")||a.getAttribute("data-loadcss")||(a.setAttribute("data-loadcss",!0),t.bindMediaToggle(a))}},!t.support()){t.poly();var n=e.setInterval(t.poly,500);e.addEventListener?e.addEventListener("load",function(){t.poly(),e.clearInterval(n)}):e.attachEvent&&e.attachEvent("onload",function(){t.poly(),e.clearInterval(n)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:e.loadCSS=loadCSS}("undefined"!=typeof global?global:this);';
+    const LOADCSS = '/* loadCSS. [c]2018 Filament Group, Inc. MIT License */ (function(w){"use strict";if(!w.loadCSS){w.loadCSS=function(){}}
+var rp=loadCSS.relpreload={};rp.support=(function(){var ret;try{ret=w.document.createElement("link").relList.supports("preload")}catch(e){ret=!1}
+return function(){return ret}})();rp.bindMediaToggle=function(link){var finalMedia=link.media||"all";function enableStylesheet(){link.media=finalMedia}
+if(link.addEventListener){link.addEventListener("load",enableStylesheet)}else if(link.attachEvent){link.attachEvent("onload",enableStylesheet)}
+setTimeout(function(){link.rel="stylesheet";link.media="only x"});setTimeout(enableStylesheet,3000)};rp.poly=function(){if(rp.support()){return}
+var links=w.document.getElementsByTagName("link");for(var i=0;i<links.length;i++){var link=links[i];if(link.rel==="preload"&&link.getAttribute("as")==="style"&&!link.getAttribute("data-loadcss")){link.setAttribute("data-loadcss",!0);rp.bindMediaToggle(link)}}};if(!rp.support()){rp.poly();var run=w.setInterval(rp.poly,500);if(w.addEventListener){w.addEventListener("load",function(){rp.poly();w.clearInterval(run)})}else if(w.attachEvent){w.attachEvent("onload",function(){rp.poly();w.clearInterval(run)})}}
+if(typeof exports!=="undefined"){exports.loadCSS=loadCSS}
+else{w.loadCSS=loadCSS}}(typeof global!=="undefined"?global:this))';
     
     /**
      * Instance of the object.
