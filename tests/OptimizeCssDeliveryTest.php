@@ -45,7 +45,11 @@ class OptimizeCssDeliveryTest extends TestCase {
         $this->assertContains('wp_head', $actions);
     }
 
-    public function test_in_area_amministrativa_non_registra_nulla() {
+    /**
+     * In bacheca il plugin non deve toccare i fogli di stile: registra soltanto
+     * l'avviso di deprecazione.
+     */
+    public function test_in_area_amministrativa_registra_solo_l_avviso() {
         $original_instance = SpeedUp_OptimizeCSSDelivery::$instance;
         $original_is_admin = $GLOBALS['speedup_is_admin'];
 
@@ -55,8 +59,16 @@ class OptimizeCssDeliveryTest extends TestCase {
 
             SpeedUp_OptimizeCSSDelivery::get_instance();
 
-            $this->assertSame(array(), $GLOBALS['speedup_calls']['add_filter']);
-            $this->assertSame(array(), $GLOBALS['speedup_calls']['add_action']);
+            $this->assertSame(
+                array(),
+                $GLOBALS['speedup_calls']['add_filter'],
+                'Nessun filtro sui fogli di stile in bacheca.'
+            );
+            $this->assertSame(
+                array('admin_notices'),
+                array_column($GLOBALS['speedup_calls']['add_action'], 0),
+                'Solo l\'avviso di deprecazione, e nient\'altro.'
+            );
         } finally {
             SpeedUp_OptimizeCSSDelivery::$instance = $original_instance;
             $GLOBALS['speedup_is_admin'] = $original_is_admin;
@@ -152,5 +164,73 @@ class OptimizeCssDeliveryTest extends TestCase {
         $this->assertStringContainsString('<script', $out);
         $this->assertStringContainsString('loadCSS', $out);
         $this->assertStringContainsString('</script>', $out);
+    }
+    // -----------------------------------------------------------------------
+    // Avviso di deprecazione
+    // -----------------------------------------------------------------------
+
+    private function noticeOutput() {
+        ob_start();
+        SpeedUp_OptimizeCSSDelivery::get_instance()->deprecation_notice();
+        return (string) ob_get_clean();
+    }
+
+    public function test_l_avviso_dice_che_il_plugin_non_serve_piu() {
+        $messaggio = SpeedUp_OptimizeCSSDelivery::deprecation_message();
+
+        $this->assertStringContainsString('notice notice-warning', $messaggio);
+        $this->assertStringContainsString('no longer recommended', $messaggio);
+    }
+
+    /**
+     * Non richiudibile di proposito: un avviso che si puo' chiudere viene
+     * dimenticato, e il punto e' che il plugin non ha piu' ragione di girare.
+     */
+    public function test_l_avviso_non_e_richiudibile() {
+        $this->assertStringNotContainsString('is-dismissible', SpeedUp_OptimizeCSSDelivery::deprecation_message());
+    }
+
+    /**
+     * @dataProvider schermateInCuiSiVede
+     */
+    public function test_si_vede_dove_e_azionabile($schermata) {
+        $GLOBALS['speedup_screen_id'] = $schermata;
+        $GLOBALS['speedup_can_manage'] = true;
+
+        $this->assertNotSame('', $this->noticeOutput(), "Doveva comparire su: $schermata");
+    }
+
+    public function schermateInCuiSiVede() {
+        return array(
+            'bacheca'         => array('dashboard'),
+            'bacheca di rete' => array('dashboard-network'),
+            'plugin'          => array('plugins'),
+            'plugin di rete'  => array('plugins-network'),
+        );
+    }
+
+    /**
+     * Un avviso non richiudibile su ogni schermata sarebbe fastidioso invece
+     * che informativo.
+     */
+    public function test_non_si_vede_altrove() {
+        $GLOBALS['speedup_screen_id'] = 'post';
+        $GLOBALS['speedup_can_manage'] = true;
+
+        $this->assertSame('', $this->noticeOutput());
+    }
+
+    public function test_non_si_vede_a_chi_non_puo_disattivare_plugin() {
+        $GLOBALS['speedup_screen_id'] = 'plugins';
+        $GLOBALS['speedup_can_manage'] = false;
+
+        $this->assertSame('', $this->noticeOutput());
+    }
+
+    public function test_regge_l_assenza_di_una_schermata() {
+        $GLOBALS['speedup_screen_id'] = null;
+        $GLOBALS['speedup_can_manage'] = true;
+
+        $this->assertSame('', $this->noticeOutput());
     }
 }
