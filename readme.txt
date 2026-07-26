@@ -1,7 +1,7 @@
 === Speed Up - Optimize CSS Delivery ===
 Contributors: nigro.simone
 Donate link: http://paypal.me/snwp
-Tags: async, asynchronous, wp_enqueue_style, performance, seo, optimize, front-end optimization, performance, speed, web performance optimization, wordpress optimization tool
+Tags: render blocking css, async css, defer css, optimize css delivery, page speed
 Requires at least: 3.5
 Tested up to: 7.0
 Stable tag: 1.0.12
