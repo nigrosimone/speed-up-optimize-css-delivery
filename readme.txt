@@ -5,7 +5,7 @@ Tags: render blocking css, async css, defer css, optimize css delivery, page spe
 Requires at least: 6.0
 Requires PHP: 7.0
 Tested up to: 7.0
-Stable tag: 1.0.12
+Stable tag: 1.0.13
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,6 +34,11 @@ Note: this only works if your other plugins and theme add the CSS correctly.
 2. Activate the plugin through the 'Plugins' menu in WordPress
 
 == Changelog ==
+
+= 1.0.13 =
+* Fix the media attribute being captured too greedily: an attribute added after it by another filter ended up inside the generated tag
+* Escape the stylesheet handle and URL before writing them into the tag
+* Declare minimum requirements: WordPress 6.0 and PHP 7.0
 
 = 1.0.12 =
 * Tested up to Wordpress 7.0
