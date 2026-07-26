@@ -2,7 +2,8 @@
 Contributors: nigro.simone
 Donate link: http://paypal.me/snwp
 Tags: render blocking css, async css, defer css, optimize css delivery, page speed
-Requires at least: 3.5
+Requires at least: 6.0
+Requires PHP: 7.0
 Tested up to: 7.0
 Stable tag: 1.0.12
 License: GPLv2 or later
