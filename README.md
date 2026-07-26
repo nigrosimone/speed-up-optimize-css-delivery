@@ -64,7 +64,7 @@ fonts, icon sets, and any CSS for content below the fold.
 
 ## Requirements
 
-WordPress 3.5 or newer. No server-side requirements.
+WordPress 6.0 or newer, PHP 7.0 or newer. No server-side requirements.
 
 ## Installation
 
