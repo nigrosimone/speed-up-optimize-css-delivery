@@ -78,6 +78,7 @@ else{w.loadCSS=loadCSS}}(typeof global!=="undefined"?global:this))';
 	public function style_loader_tag( $html, $handle, $href ) {
 
 		// check if current handle is excluded
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- self::HANDLE vale 'speed-up-optimize-css-delivery', che il prefisso ce l'ha: PHPCS non risolve le costanti.
 		if ( apply_filters( self::HANDLE, $handle ) === true ) {
 			return $html;
 		}
@@ -86,7 +87,11 @@ else{w.loadCSS=loadCSS}}(typeof global!=="undefined"?global:this))';
 		$media = 'all';
 
 		// try to catch media-attribute in the html tag
-		if ( preg_match( '/media=\'(.*)\'/', $html, $match ) ) {
+		//
+		// Il quantificatore non e' greedy: con "(.*)" un eventuale attributo dopo
+		// media (aggiunto da un altro filtro) verrebbe risucchiato nel valore e
+		// finirebbe nel tag generato.
+		if ( preg_match( '/media=\'(.*?)\'/', $html, $match ) ) {
 
 			// extract media-attribute
 			if ( isset( $match[1] ) && ! empty( $match[1] ) ) {
@@ -94,7 +99,14 @@ else{w.loadCSS=loadCSS}}(typeof global!=="undefined"?global:this))';
 			}
 		}
 
-		return '<link id="' . $handle . '" rel="preload" href="' . $href . '" as="style" media="' . $media . '" onload="this.onload=null;this.rel=\'stylesheet\'" type="text/css"><noscript><link id="' . $handle . '" rel="stylesheet" href="' . $href . '" media="' . $media . '" type="text/css"></noscript>' . "\n";
+		// handle, href e media finiscono in attributi HTML: vanno escapati anche
+		// se arrivano da WordPress, perche' altri filtri possono averli alterati.
+		$id    = esc_attr( $handle );
+		$url   = esc_url( $href );
+		$media = esc_attr( $media );
+
+		// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- il fallback <noscript> non e' enqueueabile: e' proprio il tag che questo filtro sostituisce.
+		return '<link id="' . $id . '" rel="preload" href="' . $url . '" as="style" media="' . $media . '" onload="this.onload=null;this.rel=\'stylesheet\'" type="text/css"><noscript><link id="' . $id . '" rel="stylesheet" href="' . $url . '" media="' . $media . '" type="text/css"></noscript>' . "\n";
 	}
 
 	/**
@@ -104,6 +116,9 @@ else{w.loadCSS=loadCSS}}(typeof global!=="undefined"?global:this))';
 	 * @return void
 	 */
 	public function print_inline_script() {
+		// Entrambe le parti sono costanti di questa classe, non dati esterni:
+		// self::LOADCSS e' JavaScript e escaparlo lo renderebbe non eseguibile.
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo '<script id="' . self::HANDLE . '" type="text/javascript">' . self::LOADCSS . '</script>';
 	}
 }

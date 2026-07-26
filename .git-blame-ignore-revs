@@ -1,0 +1,6 @@
+# Commit puramente meccanici, da saltare in "git blame".
+#
+# GitHub usa questo file automaticamente. In locale lo attiva composer install.
+
+# Riformattazione secondo i WordPress Coding Standards (solo phpcbf).
+92dfc763c5d46b54fd582e0bb69667faa2f10ad6
