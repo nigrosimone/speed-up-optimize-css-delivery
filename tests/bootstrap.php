@@ -63,6 +63,33 @@ if (!function_exists('esc_url')) {
     }
 }
 
+/** Schermata di amministrazione corrente, controllata dai test. */
+$GLOBALS['speedup_screen_id'] = 'plugins';
+$GLOBALS['speedup_can_manage'] = true;
+
+if (!function_exists('current_user_can')) {
+    function current_user_can($capability) {
+        return (bool) $GLOBALS['speedup_can_manage'];
+    }
+}
+
+if (!function_exists('get_current_screen')) {
+    function get_current_screen() {
+        if (null === $GLOBALS['speedup_screen_id']) {
+            return null;
+        }
+        $screen = new stdClass();
+        $screen->id = $GLOBALS['speedup_screen_id'];
+        return $screen;
+    }
+}
+
+if (!function_exists('wp_kses_post')) {
+    function wp_kses_post($html) {
+        return $html;
+    }
+}
+
 require_once dirname(__DIR__) . '/speed-up-optimize-css-delivery.php';
 
 $GLOBALS['speedup_registered_at_load'] = $GLOBALS['speedup_calls'];

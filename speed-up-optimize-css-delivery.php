@@ -63,6 +63,9 @@ else{w.loadCSS=loadCSS}}(typeof global!=="undefined"?global:this))';
 
 			add_filter( 'style_loader_tag', array( $this, 'style_loader_tag' ), PHP_INT_MAX, 3 );
 			add_action( 'wp_head', array( $this, 'print_inline_script' ) );
+		} else {
+			// Il plugin resta funzionante: l'avviso informa, non rompe.
+			add_action( 'admin_notices', array( $this, 'deprecation_notice' ) );
 		}
 	}
 
@@ -120,6 +123,65 @@ else{w.loadCSS=loadCSS}}(typeof global!=="undefined"?global:this))';
 		// self::LOADCSS e' JavaScript e escaparlo lo renderebbe non eseguibile.
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo '<script id="' . self::HANDLE . '" type="text/javascript">' . self::LOADCSS . '</script>';
+	}
+
+	/**
+	 * Warn that this plugin is no longer needed.
+	 *
+	 * Deliberately not dismissible: a notice that can be dismissed is a notice
+	 * that gets forgotten, and the point of this one is that the plugin has no
+	 * reason left to run. It is shown only where it can be acted on — the
+	 * dashboard and the plugins screen — and only to people who can deactivate
+	 * plugins. A permanent notice on every admin screen would be irritating
+	 * rather than informative.
+	 *
+	 * @since  1.0.14
+	 * @access public
+	 * @return void
+	 */
+	public function deprecation_notice() {
+
+		if ( ! current_user_can( 'activate_plugins' ) ) {
+			return;
+		}
+
+		if ( ! function_exists( 'get_current_screen' ) ) {
+			return;
+		}
+
+		$screen = get_current_screen();
+
+		if ( null === $screen ) {
+			return;
+		}
+
+		$screens = array( 'dashboard', 'dashboard-network', 'plugins', 'plugins-network' );
+
+		if ( ! in_array( $screen->id, $screens, true ) ) {
+			return;
+		}
+
+		echo wp_kses_post( self::deprecation_message() );
+	}
+
+	/**
+	 * The text of the deprecation notice.
+	 *
+	 * Separate from the hook so a test can assert it without simulating an
+	 * admin screen.
+	 *
+	 * @since  1.0.14
+	 * @static
+	 * @access public
+	 * @return string
+	 */
+	public static function deprecation_message() {
+		return '<div class="notice notice-warning">'
+			. '<p><strong>Speed Up &#8211; Optimize CSS Delivery is no longer recommended.</strong></p>'
+			. '<p>Deferring every stylesheet makes the page paint before its own layout arrives. That flash of unstyled content is measured as Cumulative Layout Shift &#8212; one of the Core Web Vitals this plugin is meant to improve.</p>'
+			. '<p>The current advice is to inline the CSS needed for the top of the page and defer only the rest, which is more than rewriting a <code>link</code> tag can do.</p>'
+			. '<p><strong>If you have not configured the exclusion filter for your main stylesheets, deactivating this plugin will most likely improve your scores rather than worsen them.</strong></p>'
+			. '</div>';
 	}
 }
 

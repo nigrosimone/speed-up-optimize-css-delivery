@@ -13,6 +13,12 @@ This plugin load the stylesheets asynchronously and improve page load times.
 
 == Description ==
 
+**This plugin is no longer recommended.** Deferring every stylesheet makes the page paint before its own layout arrives. That flash of unstyled content is measured as Cumulative Layout Shift — one of the Core Web Vitals this plugin is meant to improve.
+
+The current advice is to inline the CSS needed for the top of the page and defer only the rest, which is more than rewriting a `link` tag can do.
+
+**If you have not configured the exclusion filter for your main stylesheets, deactivating this plugin will most likely improve your scores rather than worsen them.**
+
 This small plugin (5 Kb) loads the stylesheets asynchronously and improve page load times.
 
 The recommended use of this plugin is to load your vital stylesheets synchronously and non-vital CSS files asynchronously. 
